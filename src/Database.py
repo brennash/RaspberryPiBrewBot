@@ -13,6 +13,13 @@ class Database:
 		self.conn = None
 		self.cur = None
 
+	def addMeasurement(self, temperature):
+		self.connect()
+		self.cur = self.conn.cursor()
+		self.cur.execute("INSERT INTO measurements (profile,date,temperature) VALUES (?, NOW(), ?)", (profile, temperature))
+		self.conn.commit()
+		self.conn.close()
+
 	def getCurrentDbTime(self):
 		self.connect()
 		self.cur = self.conn.cursor()
