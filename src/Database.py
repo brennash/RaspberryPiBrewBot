@@ -13,10 +13,17 @@ class Database:
 		self.conn = None
 		self.cur = None
 
-	def addMeasurement(self, temperature):
+	def truncateMeasurements(self):
 		self.connect()
 		self.cur = self.conn.cursor()
-		self.cur.execute("INSERT INTO measurements (profile,date,temperature) VALUES (?, NOW(), ?)", (profile, temperature))
+		self.cur.execute("TRUNCATE measurements")
+		self.conn.commit()
+		self.conn.close()
+
+	def addMeasurement(self, profile, fermenter_temp, within_temp_range, ambient_temp, heater_on, cooling_on):
+		self.connect()
+		self.cur = self.conn.cursor()
+		self.cur.execute("INSERT INTO measurements (profile,date,fermenter_temp,within_temp_range,ambient_temp,heater_on,cooling_on) VALUES (?, NOW(), ?, ?, ?, ?, ?)", (profile, fermenter_temp, within_temp_range, ambient_temp, heater_on, cooling_on))
 		self.conn.commit()
 		self.conn.close()
 
