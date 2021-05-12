@@ -13,6 +13,9 @@ class BrewBot:
 
 		self.initDatabase(configFilename)
 		self.database.getCurrentDbTime()
+		
+		logging.config.fileConfig('conf/logging.conf')
+		logger = logging.getLogger('simpleExample')
 
 	def initDatabase(self, filename):
 		with open(filename, "r") as yamlfile:
