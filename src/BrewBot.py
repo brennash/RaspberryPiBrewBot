@@ -1,6 +1,7 @@
 import os
 import sys
 import yaml
+import logging
 from Database import Database
 from optparse import OptionParser
 
@@ -23,6 +24,24 @@ class BrewBot:
 		port     = data[0]['database']['port']
 		self.database = Database(hostname, port, username, password, database)
 
+	def setupLogging(self):
+		""" 
+		Sets up the logging function to write data to the log folder with a rotating file logger.
+		"""
+		try:
+			self.logger = logging.getLogger(__name__)
+			handler = RotatingFileHandler(self.logFile, maxBytes=500000, backupCount=5)
+			format  = "%(asctime)s %(levelname)-8s %(message)s"
+			handler.setFormatter(logging.Formatter(format))
+			handler.setLevel(logging.INFO)
+			self.logger.addHandler(handler)
+			self.logger.setLevel(logging.INFO)
+			self.logger.info('Starting logging..')
+		except Exception, err:
+			errorStr = 'Error initializing log file, ',err
+			print self.logFile
+			print errorStr
+			exit(1)
 
 
 def main(argv):
