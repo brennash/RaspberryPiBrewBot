@@ -61,6 +61,9 @@ mysql -u brewbot -D brewbot_test -p < sql/build_tables.sql
     database: brewbot
 ```
 
+## Running the Brewbot Code
+Once you've everything setup, the next step is to enable the code to start running once your Raspberry Pi is powered on. 
+Since you've got an LCD display, the first boot screen should show the temperature reading and the IP address of the Pi. 
 
 ## References
 The AdaFruit LCD display API can be found here - https://circuitpython.readthedocs.io/projects/charlcd/en/latest/api.html
