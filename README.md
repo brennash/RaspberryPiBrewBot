@@ -77,3 +77,6 @@ We want to have the code start execution immediately when the Raspberry Pi finis
 | The Raspberry Pi LCD Wiring Guide | https://learn.adafruit.com/character-lcds/python-circuitpython#python-and-circuitpython-usage-7-12 |
 | Setting up scripts to boot up straight | https://learn.adafruit.com/drive-a-16x2-lcd-directly-with-a-raspberry-pi/init-script |
 | I2C Pinout Schematic | https://pinout.xyz/pinout/i2c |
+| GPIO code sample | https://www.raspberrypi.org/documentation/usage/gpio/python/README.md |
+| LCD Pinout Schematic | https://learn.adafruit.com/assets/938 | 
+| DS18B20 Wiring Diagram | http://www.d3noob.org/2018/04/this-post-is-part-of-book-raspberry-pi_24.html |
