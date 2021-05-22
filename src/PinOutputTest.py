@@ -21,17 +21,18 @@ class PinOutputTest:
 
 		# This might be the third from the right
 		#self.led         = LED(14)
-		self.led = LED(20)
+		self.pinNum = 21
+		self.led    = LED(self.pinNum)
 
 	def run(self):
 		counter = 0
 		while counter < 60:
 			self.lcd.clear()
-			self.lcd.message = "ON "
+			self.lcd.message = "PIN "+str(self.pinNum)+" ON"
 			self.led.on()
 			time.sleep(1)
 			self.lcd.clear()
-			self.lcd.message = "OFF"
+			self.lcd.message = "PIN "+str(self.pinNum)+" OFF"
 			self.led.off()
 			time.sleep(1)
 			counter += 1
