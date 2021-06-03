@@ -4,3 +4,7 @@
     username: brewbot
     password: brewbot
     database: brewbot
+- ambient_sensor:
+    path: /sys/bus/w1/devices
+    hexId: 28-00000d19dabd
+    filename: w1_slave

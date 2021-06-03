@@ -1,8 +1,11 @@
 import os
 import sys
+import time
+import datetime
 import yaml
 import logging
 from Database import Database
+from TemperatureSensor import TemperatureSensor
 from optparse import OptionParser
 
 class BrewBot:
@@ -10,12 +13,12 @@ class BrewBot:
 	def __init__(self, configFilename, verboseFlag=False):
 		self.database = None
 		self.display = None
+		self.ambientSensor = None
 
 		self.initDatabase(configFilename)
-		self.database.getCurrentDbTime()
-		
-		logging.config.fileConfig('conf/logging.conf')
-		logger = logging.getLogger('simpleExample')
+		self.initSensors(configFilename)
+		#logging.config.fileConfig('conf/logging.conf')
+		#logger = logging.getLogger('simpleExample')
 
 	def initDatabase(self, filename):
 		with open(filename, "r") as yamlfile:
@@ -26,6 +29,23 @@ class BrewBot:
 		hostname = data[0]['database']['hostname']
 		port     = data[0]['database']['port']
 		self.database = Database(hostname, port, username, password, database)
+
+	def initSensors(self, filename):
+		with open(filename, "r") as yamlfile:
+			data = yaml.load(yamlfile, Loader=yaml.FullLoader)
+		path = data[1]['ambient_sensor']['path']
+		hexId = data[1]['ambient_sensor']['hexId']
+		filename = data[1]['ambient_sensor']['filename']
+		self.ambientSensor = TemperatureSensor(path, hexId, filename)
+
+
+	def run(self):
+
+		while True:
+			tempC, tempF = self.ambientSensor.getReading()
+			print("{0}, Temp:{1}".format(datetime.datetime.now(), tempC))
+			time.sleep(30)
+
 
 	def setupLogging(self):
 		""" 
@@ -40,10 +60,9 @@ class BrewBot:
 			self.logger.addHandler(handler)
 			self.logger.setLevel(logging.INFO)
 			self.logger.info('Starting logging..')
-		except Exception, err:
+		except Exception as err:
 			errorStr = 'Error initializing log file, ',err
-			print self.logFile
-			print errorStr
+			print(errorStr)
 			exit(1)
 
 
