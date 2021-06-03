@@ -3,6 +3,38 @@ A temperature controller for DIY beer fermenter.
 
 ## Setup
 
+### Setting up the 1-Wire Bus
+The temperature sensors use the GPIO-4 pin on the Raspberry Pi, and can be used in a bus setup, i.e.,
+multiple temperature sensors can use the same wire. However, to enable it, you need to edit the 
+```/boot/config.txt``` file and add the following line, 
+
+```
+dtoverlay=w1-gpio,gpiopin=4
+```
+
+Restart the Raspberry Pi and then do an ```lsmod``` that hopefully shows up the following, 
+
+```
+lsmod | grep w1
+
+w1_therm               20480  0
+w1_gpio                16384  0
+wire                   36864  2 w1_gpio,w1_therm
+```
+
+The sensor is writing to a file in ```/sys/bus/w1/devices/<some-hex-number>/w1_slave```, and 
+when you view the file you'll see something like below to know it's working. 
+
+```
+6b 01 4b 46 7f ff 05 10 49 : crc=49 YES
+6b 01 4b 46 7f ff 05 10 49 t=22687
+```
+
+The first line has a ```YES``` to indicate the temperature measurement is valid, the end of the 
+second line ```t=22687``` indicates the temperature in thousands of a degree Celsius, so in this 
+instance it's showing a rather balmy 22.687 degrees C. 
+
+
 ### Setting up the LCD
 The I/O to communicate with the LCD shield needs to be enabled in the Raspberry Pi config settings, 
 so first, go into the ```raspi-config``` and under Interface Options set the appropriate I2C flag. 
