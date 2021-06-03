@@ -81,3 +81,4 @@ We want to have the code start execution immediately when the Raspberry Pi finis
 | LCD Pinout Schematic | https://learn.adafruit.com/assets/938 | 
 | DS18B20 Wiring Diagram | http://www.d3noob.org/2018/04/this-post-is-part-of-book-raspberry-pi_24.html |
 | Reading temperatures using a DS18B20 | https://raspbrew.tumblr.com/post/39850791984/reading-temperatures-on-a-raspberry-pi-using | 
+| DS18B20 Wiring Setup | https://www.mkompf.com/weather/pionewiremini.html | 
