@@ -5,6 +5,7 @@ import datetime
 import yaml
 import logging
 from Database import Database
+from LcdScreen import LcdScreen
 from TemperatureSensor import TemperatureSensor
 from optparse import OptionParser
 
@@ -14,11 +15,11 @@ class BrewBot:
 		self.database = None
 		self.display = None
 		self.ambientSensor = None
+		self.probeSensor = None
 
 		self.initDatabase(configFilename)
 		self.initSensors(configFilename)
-		#logging.config.fileConfig('conf/logging.conf')
-		#logger = logging.getLogger('simpleExample')
+		self.initDisplay()
 
 	def initDatabase(self, filename):
 		with open(filename, "r") as yamlfile:
@@ -33,18 +34,31 @@ class BrewBot:
 	def initSensors(self, filename):
 		with open(filename, "r") as yamlfile:
 			data = yaml.load(yamlfile, Loader=yaml.FullLoader)
-		path = data[1]['ambient_sensor']['path']
-		hexId = data[1]['ambient_sensor']['hexId']
-		filename = data[1]['ambient_sensor']['filename']
-		self.ambientSensor = TemperatureSensor(path, hexId, filename)
+		ambPath     = data[1]['ambient_sensor']['path']
+		ambHexId    = data[1]['ambient_sensor']['hexId']
+		ambFilename = data[1]['ambient_sensor']['filename']
 
+		prbPath     = data[2]['probe_sensor']['path']
+		prbHexId    = data[2]['probe_sensor']['hexId']
+		prbFilename = data[2]['probe_sensor']['filename']
+
+		self.ambientSensor = TemperatureSensor(ambPath, ambHexId, ambFilename)
+		self.probeSensor   = TemperatureSensor(prbPath, prbHexId, prbFilename)
+
+	def initDisplay(self):
+		self.display = LcdScreen()
+		self.display.updateDisplay()
 
 	def run(self):
-
 		while True:
-			tempC, tempF = self.ambientSensor.getReading()
-			print("{0}, Temp:{1}".format(datetime.datetime.now(), tempC))
-			time.sleep(30)
+			tempC, tempF             = self.ambientSensor.getReading()
+			sensorTempC, sensorTempF = self.probeSensor.getReading()
+			print("{0}, Ambient Temp:{1}".format(datetime.datetime.now(), tempC))
+			print("     Probe Temp:{0}".format(sensorTempC))
+			self.display.updateAmbientTemp(tempC)
+			self.display.updateFermenterTemp(sensorTempC)
+			self.display.updateDisplay()
+			time.sleep(5)
 
 
 	def setupLogging(self):
