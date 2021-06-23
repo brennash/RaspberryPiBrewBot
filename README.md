@@ -3,6 +3,20 @@ A temperature controller for DIY beer fermenter.
 
 ## Setup
 
+## Materials
+The following list of materials are required to build out this temperature controller. 
+
+* [Waterproof Temperature Sensor](https://store.brewpi.com/waterproof-onewire-temperature-sensor-rj11-ds18b20)
+* [Ambient Temperature Sensor](https://ie.rs-online.com/web/p/temperature-humidity-sensor-ics/1901709/) 
+* [RJ12 Sockets](https://ie.rs-online.com/web/p/development-tool-accessories/1683093/)
+* [LCD Shield with buttons](https://thepihut.com/products/adafruit-blue-white-16x2-lcd-keypad-kit-for-raspberry-pi)
+* [Raspberry Pi 3 Model B+](https://thepihut.com/products/raspberry-pi-3-model-b-plus)
+* [NOOBS Pre-installed Micro SD Card](https://thepihut.com/products/noobs-preinstalled-sd-card)
+* [Raspberry Pi 3 Power Supply](https://thepihut.com/products/official-raspberry-pi-universal-power-supply)
+* [PHAT Stack Breakout Board](https://ie.farnell.com/pimoroni/pim322/phat-stack-fully-assembled/dp/3446772)
+
+
+
 ### Setting up the 1-Wire Bus
 The temperature sensors use the GPIO-4 pin on the Raspberry Pi, and can be used in a bus setup, i.e.,
 multiple temperature sensors can use the same wire. However, to enable it, you need to edit the 
@@ -11,6 +25,14 @@ multiple temperature sensors can use the same wire. However, to enable it, you n
 ```
 dtoverlay=w1-gpio,gpiopin=4
 ```
+
+When you are wiring up the [DS18B20 probe](https://store.brewpi.com/waterproof-onewire-temperature-sensor-rj11-ds18b20), 
+using the [RJ12 socket](https://ie.rs-online.com/web/p/development-tool-accessories/1683093/) 
+you need to wire the following, 
+
+* GPIO4 pin into PGC
+* GND pin into PGD
+* 3.3V pin into GND
 
 Restart the Raspberry Pi and then do an ```lsmod``` that hopefully shows up the following, 
 
@@ -22,8 +44,21 @@ w1_gpio                16384  0
 wire                   36864  2 w1_gpio,w1_therm
 ```
 
-The sensor is writing to a file in ```/sys/bus/w1/devices/<some-hex-number>/w1_slave```, and 
-when you view the file you'll see something like below to know it's working. 
+Or you can prompt the Pi to look for newly connected devices using, 
+
+```
+sudo modprobe w1-gpio
+```
+
+Once it's working the sensor will start writing to a file in ```/sys/bus/w1/devices/<some-hex-number>/w1_slave```. The 
+HEX number is a unique address of the sensor, in my case I see the following, 
+
+```
+ls /sys/bus/w1/devices/
+28-0000087faf90  28-00000d19dabd  w1_bus_master1
+```
+
+You can view the ```w1_slave``` in each of those ```28-00000xxxxxx``` folders and you'll see something like below to know it's working. 
 
 ```
 6b 01 4b 46 7f ff 05 10 49 : crc=49 YES
@@ -33,7 +68,6 @@ when you view the file you'll see something like below to know it's working.
 The first line has a ```YES``` to indicate the temperature measurement is valid, the end of the 
 second line ```t=22687``` indicates the temperature in thousands of a degree Celsius, so in this 
 instance it's showing a rather balmy 22.687 degrees C. 
-
 
 ### Setting up the LCD
 The I/O to communicate with the LCD shield needs to be enabled in the Raspberry Pi config settings, 
