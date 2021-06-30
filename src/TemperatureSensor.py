@@ -8,21 +8,24 @@ class TemperatureSensor:
 		self.deviceFile = path + '/' + hexId + '/' + filename
 
 	def readFromFile(self):
-		file = open(self.deviceFile, 'r')
-		lines = file.readlines()
-		file.close()
-		return lines
+		try:
+			file = open(self.deviceFile, 'r')
+			lines = file.readlines()
+			file.close()
+			return lines
+		except Exception as error:
+			return None
 
 	def getReading(self):
 		lines = self.readFromFile()
 		if lines is None:
-			return None
+			return None, None
 		else:
 			if len(lines) != 2:
-				return None
+				return None, None
 
 			if lines[0].strip()[-3:] != 'YES':
-				return None
+				return None, None
 
 			index = lines[1].find('t=')
 			tempStr = lines[1][index+2:]
