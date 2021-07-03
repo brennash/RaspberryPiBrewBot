@@ -17,15 +17,17 @@ class BrewBot:
 		self.display = None
 		self.ambientSensor = None
 		self.probeSensor = None
+		self.profileId = None
 
+		# Setup Logging
+		self.logger = None
+		self.logFile = os.environ['HOME'] + '/RaspberryPiBrewBot/logs/brewbot.log'
+		self.setupLogging()
+
+		# Initialize the database, temp sensor and display
 		self.initDatabase(configFilename)
 		self.initSensors(configFilename)
 		self.initDisplay()
-
-		self.logger = None
-		self.logFile = 'logs/brewbot.log'
-		self.setupLogging()
-
 
 	def setupLogging(self):
 		""" 
@@ -45,46 +47,61 @@ class BrewBot:
 			exit(1)
 
 	def initDatabase(self, filename):
-		with open(filename, "r") as yamlfile:
-			data = yaml.load(yamlfile, Loader=yaml.FullLoader)
-		username = data[0]['database']['username']
-		password = data[0]['database']['password']
-		database = data[0]['database']['database']
-		hostname = data[0]['database']['hostname']
-		port     = data[0]['database']['port']
-		self.database = Database(hostname, port, username, password, database)
+		try:
+			with open(filename, "r") as yamlfile:
+				data = yaml.load(yamlfile, Loader=yaml.FullLoader)
+			username = data[0]['database']['username']
+			password = data[0]['database']['password']
+			database = data[0]['database']['database']
+			hostname = data[0]['database']['hostname']
+			port     = data[0]['database']['port']
+			self.database = Database(hostname, port, username, password, database)
+
+			# Get the brew profile for this brewing
+			self.profileId = data[3]['brew_profile']['id']
+
+		except Exception as err:
+			self.logger.error("Error initializing Database - {0}".format(err))
 
 	def initSensors(self, filename):
-		with open(filename, "r") as yamlfile:
-			data = yaml.load(yamlfile, Loader=yaml.FullLoader)
-		ambPath     = data[1]['ambient_sensor']['path']
-		ambHexId    = data[1]['ambient_sensor']['hexId']
-		ambFilename = data[1]['ambient_sensor']['filename']
+		try:
+			with open(filename, "r") as yamlfile:
+				data = yaml.load(yamlfile, Loader=yaml.FullLoader)
+			ambPath     = data[1]['ambient_sensor']['path']
+			ambHexId    = data[1]['ambient_sensor']['hexId']
+			ambFilename = data[1]['ambient_sensor']['filename']
 
-		prbPath     = data[2]['probe_sensor']['path']
-		prbHexId    = data[2]['probe_sensor']['hexId']
-		prbFilename = data[2]['probe_sensor']['filename']
+			prbPath     = data[2]['probe_sensor']['path']
+			prbHexId    = data[2]['probe_sensor']['hexId']
+			prbFilename = data[2]['probe_sensor']['filename']
 
-		self.ambientSensor = TemperatureSensor(ambPath, ambHexId, ambFilename)
-		self.probeSensor   = TemperatureSensor(prbPath, prbHexId, prbFilename)
+			self.ambientSensor = TemperatureSensor(ambPath, ambHexId, ambFilename)
+			self.probeSensor   = TemperatureSensor(prbPath, prbHexId, prbFilename)
+		except Exception as err:
+			self.logger.error("Error initializing Sensor - {0}".format(err))
+
 
 	def initDisplay(self):
 		self.display = LcdScreen()
 		self.display.updateDisplay()
 
 	def run(self):
-		#tempC, tempF             = self.ambientSensor.getReading()
 		sensorTempC, sensorTempF = self.probeSensor.getReading()
+
+		minTemp = float(self.database.getMinTemp(self.profileId)[0])
+		maxTemp = float(self.database.getMaxTemp(self.profileId)[0])
+
 		self.display.updateFermenterTemp(sensorTempC)
 		self.display.updateDisplay()
-		if 20.0 >= sensorTempC and sensorTempC <= 24:
+
+		if minTemp <= sensorTempC and sensorTempC <= maxTemp:
 			tempRange = True
+			self.logger.info("Temp {0} C, within bounds {1} to {2}".format(sensorTempC, minTemp, maxTemp))
 		else:
 			tempRange = False
+			self.logger.info("Temp {0} C, outside of bounds {1} to {2}".format(sensorTempC, minTemp, maxTemp))
 
-		self.logger.info("Temp {0} C".format(sensorTempC))
-
-		self.database.addMeasurement("Starter", sensorTempC, tempRange, 9.99, False, False)
+		self.database.addMeasurement(self.profileId, sensorTempC, tempRange)
 
 def main(argv):
 	parser = OptionParser(usage="Usage: BrewBot [-v|--verbose] <config-file>")

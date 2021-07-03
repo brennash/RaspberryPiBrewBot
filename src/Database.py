@@ -20,12 +20,32 @@ class Database:
 		self.conn.commit()
 		self.conn.close()
 
-	def addMeasurement(self, profile, fermenter_temp, within_temp_range, ambient_temp, heater_on, cooling_on):
+	def addMeasurement(self, profile_id, fermenter_temp, within_temp_range):
 		self.connect()
 		self.cur = self.conn.cursor()
-		self.cur.execute("INSERT INTO measurements (profile,date,fermenter_temp,within_temp_range,ambient_temp,heater_on,cooling_on) VALUES (?, NOW(), ?, ?, ?, ?, ?)", (profile, fermenter_temp, within_temp_range, ambient_temp, heater_on, cooling_on))
+		self.cur.execute("INSERT INTO measurements (profile_id, measurement_date, fermenter_temp, within_temp_range) VALUES (?, NOW(), ?, ?)", (profile_id, fermenter_temp, within_temp_range))
 		self.conn.commit()
 		self.conn.close()
+
+	def getMinTemp(self, profile_id):
+		result = None
+		self.connect()
+		self.cur = self.conn.cursor()
+		self.cur.execute("SELECT min_temp FROM brew_profile WHERE profile_id=?", (profile_id,))
+		for min_temp in self.cur:
+			result = min_temp
+		self.conn.close()
+		return result
+
+	def getMaxTemp(self, profile_id):
+		result = None
+		self.connect()
+		self.cur = self.conn.cursor()
+		self.cur.execute("SELECT max_temp FROM brew_profile WHERE profile_id=?", (profile_id,))
+		for max_temp in self.cur:
+			result = max_temp
+		self.conn.close()
+		return result
 
 	def getCurrentDbTime(self):
 		self.connect()
