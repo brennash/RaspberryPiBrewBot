@@ -28,10 +28,7 @@ class LcdScreen:
 			self.fermenter = temp
 
 	def updateDisplay(self):
-		lcdString = "Ambient: "
-		if self.ambient is not None:
-			lcdString += str(self.ambient)[0:4] + chr(223) + "C"
-		lcdString += "\nSensor:  "
+		lcdString = "Temp:  "
 		if self.fermenter is not None:
 			lcdString += str(self.fermenter)[0:4] + chr(223) + "C"
 		self.lcd.clear()

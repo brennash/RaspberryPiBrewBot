@@ -4,6 +4,7 @@ import time
 import datetime
 import yaml
 import logging
+from logging.handlers import RotatingFileHandler
 from Database import Database
 from LcdScreen import LcdScreen
 from TemperatureSensor import TemperatureSensor
@@ -20,6 +21,28 @@ class BrewBot:
 		self.initDatabase(configFilename)
 		self.initSensors(configFilename)
 		self.initDisplay()
+
+		self.logger = None
+		self.logFile = 'logs/brewbot.log'
+		self.setupLogging()
+
+
+	def setupLogging(self):
+		""" 
+		Sets up the logging function to write data to the log folder with a rotating file logger.
+		"""
+		try:
+			self.logger = logging.getLogger(__name__)
+			handler = RotatingFileHandler(self.logFile, maxBytes=500000, backupCount=5)
+			format  = "%(asctime)s %(levelname)-8s %(message)s"
+			handler.setFormatter(logging.Formatter(format))
+			handler.setLevel(logging.INFO)
+			self.logger.addHandler(handler)
+			self.logger.setLevel(logging.INFO)
+		except Exception as err:
+			errorStr = 'Error initializing log file, ',err
+			print(errorStr)
+			exit(1)
 
 	def initDatabase(self, filename):
 		with open(filename, "r") as yamlfile:
@@ -50,35 +73,18 @@ class BrewBot:
 		self.display.updateDisplay()
 
 	def run(self):
-		while True:
-			tempC, tempF             = self.ambientSensor.getReading()
-			sensorTempC, sensorTempF = self.probeSensor.getReading()
-			print("{0}, Ambient Temp:{1}".format(datetime.datetime.now(), tempC))
-			print("     Probe Temp:{0}".format(sensorTempC))
-			self.display.updateAmbientTemp(tempC)
-			self.display.updateFermenterTemp(sensorTempC)
-			self.display.updateDisplay()
-			time.sleep(5)
+		#tempC, tempF             = self.ambientSensor.getReading()
+		sensorTempC, sensorTempF = self.probeSensor.getReading()
+		self.display.updateFermenterTemp(sensorTempC)
+		self.display.updateDisplay()
+		if 20.0 >= sensorTempC and sensorTempC <= 24:
+			tempRange = True
+		else:
+			tempRange = False
 
+		self.logger.info("Temp {0} C".format(sensorTempC))
 
-	def setupLogging(self):
-		""" 
-		Sets up the logging function to write data to the log folder with a rotating file logger.
-		"""
-		try:
-			self.logger = logging.getLogger(__name__)
-			handler = RotatingFileHandler(self.logFile, maxBytes=500000, backupCount=5)
-			format  = "%(asctime)s %(levelname)-8s %(message)s"
-			handler.setFormatter(logging.Formatter(format))
-			handler.setLevel(logging.INFO)
-			self.logger.addHandler(handler)
-			self.logger.setLevel(logging.INFO)
-			self.logger.info('Starting logging..')
-		except Exception as err:
-			errorStr = 'Error initializing log file, ',err
-			print(errorStr)
-			exit(1)
-
+		self.database.addMeasurement("Starter", sensorTempC, tempRange, 9.99, False, False)
 
 def main(argv):
 	parser = OptionParser(usage="Usage: BrewBot [-v|--verbose] <config-file>")
