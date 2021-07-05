@@ -35,7 +35,7 @@ def index():
 	reqIPAddr = request.remote_addr
 
 	# Setup the database connection
-	initDatabase(app.config['CONFIG_FILE'])
+	tempsDb = initDatabase(app.config['CONFIG_FILE'])
 
 	# Log the requestor details to file
 	app.logger.info('User Request to index.html: {0}'.format(reqIPAddr))
@@ -46,8 +46,8 @@ def index():
 	app.logger.info('User Agent Language: {0}'.format(request.user_agent.language))
 	app.logger.info('User Agent String: {0}'.format(request.user_agent.string))
 
-	if databaseDb is not None:
-		labels24,  temps24,  range24 = databaseDb.getMeasurements(-24)
+	if tempsDb is not None:
+		labels24,  temps24,  range24 = tempsDb.getMeasurements(-24)
 	else:
 		app.logger.error("Database is not initialized")
 		labels24 = []
@@ -83,9 +83,10 @@ def initDatabase(filename):
 		port       = data[0]['database']['port']
 		databaseDb = Database(hostname, port, username, password, database)
 		app.logger.info("Database successfully initialized")
+		return databaseDb
 	except Exception as err:
 		app.logger.error('Error initializing database {0}'.format(err))
-
+		return None
 
 # The main calling class, running off port 1592
 if __name__ == '__main__':
