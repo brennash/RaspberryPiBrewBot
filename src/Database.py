@@ -56,6 +56,21 @@ class Database:
 		self.conn.commit()
 		self.conn.close()
 
+	def getMeasurements(self, hoursAgo):
+		self.connect()
+		self.cur = self.conn.cursor()
+		labelData = []
+		tempData = []
+		withinRangeData = []
+		self.cur.execute("SELECT measurement_date, fermenter_temp, within_temp_range from measurements WHERE measurement_date >= NOW() - INTERVAL ? HOUR", (hoursAgo,))
+		for row in self.cur:
+			labelData.append(row[0])
+			tempData.append(row[1])
+			withinRangeData.append(row[2])
+		self.conn.commit()
+		self.conn.close()
+		return labelData, tempData, withinRangeData
+
 	def connect(self):
 		try:
 			self.conn = mariadb.connect(

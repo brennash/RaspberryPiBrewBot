@@ -114,7 +114,7 @@ Once you've created the user (brewbot) and the DB (brewbot) then just run this s
 
 ```
 mysql -u brewbot -D brewbot -p < sql/build_tables.sql 
-mysql -u brewbot -D brewbot_test -p < sql/build_tables.sql 
+mysql -u brewbot -D brewbot_test -p < sql/build_test_tables.sql 
 ```
 
 ## Setting up the Config
@@ -134,6 +134,10 @@ Since you've got an LCD display, the first boot screen should show the temperatu
 ### Starting the code at boot time
 We want to have the code start execution immediately when the Raspberry Pi finishes booting up. 
 
+
+## Charting
+The graphical temperature chart is done using [Chart.min.js](https://cdnjs.com/libraries/Chart.js) with [Python Flask](https://flask.palletsprojects.com/en/2.0.x/) 
+providing the underlying framework. 
 
 ## References
 
