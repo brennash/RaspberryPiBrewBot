@@ -12,6 +12,14 @@ CREATE OR REPLACE TABLE measurements (
  PRIMARY KEY(id)
 );
 
+CREATE OR REPLACE TABLE specific_gravity (
+ id INT NOT NULL AUTO_INCREMENT,
+ profile_id INT NOT NULL,
+ measurement_date DATETIME NOT NULL,
+ measurement DOUBLE NOT NULL,
+ PRIMARY KEY(id)
+);
+
 CREATE OR REPLACE TABLE brew_profile (
  profile_id INT NOT NULL AUTO_INCREMENT,
  profile_name VARCHAR(255) NOT NULL,
@@ -44,6 +52,9 @@ VALUES
   TRUE
 );
 
+INSERT INTO specific_gravity (profile_id, measurement_date, measurement) VALUES 
+(1, NOW() - INTERVAL 7 DAY, 1030.0),
+(1, NOW(), 1005.0);
 
 INSERT INTO measurements (profile_id, measurement_date, fermenter_temp, within_temp_range, ambient_temp, heating_on, cooling_on) VALUES
  (1, NOW() - INTERVAL 10 DAY, 22.0, TRUE, 24.0, FALSE, FALSE), 

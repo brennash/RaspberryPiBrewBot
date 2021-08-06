@@ -132,8 +132,37 @@ Once you've everything setup, the next step is to enable the code to start runni
 Since you've got an LCD display, the first boot screen should show the temperature reading and the IP address of the Pi. 
 
 ### Starting the code at boot time
-We want to have the code start execution immediately when the Raspberry Pi finishes booting up. 
+We want to have the code start execution immediately when the Raspberry Pi finishes booting up. Even when there may be power outages 
+to the Pi, we want it to come back up and continue taking sensor readings. The easiest way to do this is using the crontab file. 
 
+First create a run script that will get called periodically, so that it runs the python script using the appropriate configuration 
+settings. In this example, we've created a file in ```/home/pi/runScript.sh``` with the following details.
+
+```
+#!/bin/bash
+python3 /home/pi/RaspberryPiBrewBot/src/BrewBot.py /home/pi/RaspberryPiBrewBot/conf/my_brew_config.yaml
+```
+
+Adjust the above paths to point at where you've installed the brewbot and the config, and then set the file so that it's executable by 
+the crontab, e.g., 
+
+```
+chmod 755 /home/pi/runScript.sh
+```
+
+Once you've done that you need to insert the command to run this script at a set interval. This is done by adding your file to the crontab schedule 
+as follows, 
+
+```
+crontab -e
+```
+
+The above command will let you configure how regularly the BrewBot will take sensor readings and commit them to the 
+database. Typically, a 5 minute interval is sufficient, since it will let the heating or cooling element take effect. Enter the following line, 
+
+```
+*/5 * * * * /home/pi/runScript.sh
+```
 
 ## Charting
 The graphical temperature chart is done using [Chart.min.js](https://cdnjs.com/libraries/Chart.js) with [Python Flask](https://flask.palletsprojects.com/en/2.0.x/) 

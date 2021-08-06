@@ -10,6 +10,14 @@ CREATE OR REPLACE TABLE measurements (
  PRIMARY KEY(id)
 );
 
+CREATE OR REPLACE TABLE specific_gravity (
+ id INT NOT NULL AUTO_INCREMENT,
+ profile_id INT NOT NULL,
+ measurement_date DATETIME NOT NULL,
+ measurement DOUBLE NOT NULL,
+ PRIMARY KEY(id)
+);
+
 CREATE OR REPLACE TABLE brew_profile (
  profile_id INT NOT NULL AUTO_INCREMENT,
  profile_name VARCHAR(255) NOT NULL,
