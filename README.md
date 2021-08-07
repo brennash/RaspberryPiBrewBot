@@ -3,6 +3,10 @@ A temperature controller for DIY beer fermenter.
 
 ## Setup
 
+
+## Brewing How-To Guide
+For brevity, there's a quick [how-to guide to brewing](docs/BREWING.md) that will go through the various steps getting setup to brew. 
+
 ## Materials
 The following list of materials are required to build out this temperature controller. 
 
