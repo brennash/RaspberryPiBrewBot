@@ -4,12 +4,14 @@ Aside from building the brewbot temperature controller, the most difficult part 
 This guide assumes you're starting with some home-brew kit, like the [Cooper's home-brew kit](https://www.homebrewwest.ie/coopers-original-dark-ale-classic-old-dark-ale-17kg-beer-kit-251-p.asp) that I've got fermenting at this moment. 
 Home brew kits should consist of three things, 
 
-* The malt extract, which can come in a tin can or a sachet.
+* The malt extract, which can come in a tin can or a sachet with around 1 litre of pretty viscous gloop.
 * A big bag (1 kg) of finely ground sugar, sometimes called things like flavour enhancer or brew enhancer. However, it's just sugar. 
 * A small (10 g) sachet of dry yeast. 
 
-Basically if you put all these things into a big bucket, added tepid water, and left it for a week you'd have beer. It's as simple as that. People brew booze in prison radiators with 
-fruit juice and bits of chewed up bread, how hard can it be? 
+Basically if you put all these things into a big bucket, added tepid water, and leave it alone for a week you'd have beer. 
+It's as simple as that. People brew booze in prison radiators with fruit juice and bits of chewed up bread, how hard can it be? 
+
+Fermentation is the process where brewer's yeast consumes the sugar in the brew, converting it to alcohol and carbon dioxide.
 
 ## Naming conventions
 As befitting a process that's been around for thousands of years, it's got a lot of its own terms and naming conventions. For clarity, we've listed a few of them here.
@@ -17,10 +19,12 @@ As befitting a process that's been around for thousands of years, it's got a lot
 * ***wort*** - the mixture of malt extract, sugar and water in your fermenter.
 * ***pitching*** - chucking in brewing yeast into your wort, either in dry or liquid form. 
 * ***gravity*** - a measure of the remaining sugar content of your wort, which provides an indication of the strength of your beer. 
+* ***original gravity*** - the amount of sugar in your brew at the start of the brewing process.
+* ***final gravity*** - the amount of sugar left in your brew after fermentation has finished.
 
 ## Kit
 Aside from our [homebrew kit](https://www.thehomebrewcompany.ie/mangrove-jacks-craft-series-nz-pale-ale-22kg-40-pints-p-3593.html), we need a few items to hold the beer while it's 
-being produced by the brewing yeast. 
+being worked on by the brewing yeast. 
 
 ![Fermenter](imgs/fermenter.jpg?raw=true "Basic Fermenter")
 
@@ -43,5 +47,13 @@ contact with your brewing beer, including your thermocouple, airlock, and anythi
 
 ## Preparations - Making a Yeast Starter
 Pitching is the process of adding yeast to wort to start fermentation and produce beer. Usually, with the homebrew kit you get a small packet of dry yeast. They say on the instructions 
-to sprinkle this dry yeast on top of your wort. However, some brewer recommend making a yeast starter, by adding your dry yeast to a cup of sugar water about 30 minutes before you're ready 
-to brew. 
+to sprinkle this dry yeast on top of your wort. However, some brewers recommend making a yeast starter, which is simply putting the yeast into some sugar water to bring it to life a bit 
+before you chuck the whole lot into your brew. 
+
+So, sanitize a cup (or just take one fresh out of the dishwasher), put two or three spoonfuls of sugar into it and half fill it with some warm water. It's important 
+this sugar water brew isn't too hot, or it will kill the yeast, so get a sanitized food thermometer and make sure the mixture is somewhere in the range 20-25C (68-87F). 
+Now sprinkle the dry yeast over the top, and cover the cup with some aluminium foil for about 30 minutes. While it's doing its thing, start making your wort. 
+
+## Making your brewing wort
+The homebrew kits come with a large can or sachet of malt, which will be highly viscous sticky stuff. Put it in a hot water bath for a few minutes to loosen it 
+up
